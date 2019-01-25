@@ -1,0 +1,186 @@
+'use strict';
+ 
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express().use(bodyParser.json()); // creates http server
+const token = 'huhuha'; // type here your verification token
+const opn = require('opn');
+const http = require('http');
+var fs = require('fs'),
+    path = require('path'),
+    _ = require('underscore');
+const delay = require('delay');
+
+ 
+app.listen(3000, () => console.log('[ChatBot] Webhook is listening'));
+
+app.get('/', (req, res) => {
+    // check if verification token is correct
+    if (req.query.token !== token) {
+        return res.sendStatus(401);
+    }
+ 
+    // return challenge
+
+
+    return res.end(req.query.challenge);
+});
+
+
+
+
+
+
+
+
+
+// Return only base file name without dir
+function getMostRecentFileName(dir) {
+    var files = fs.readdirSync(dir);
+
+    // use underscore for max()
+    return _.max(files, function (f) {
+        var fullpath = path.join(dir, f);
+
+        // ctime = creation time is used
+        // replace with mtime for modification time
+        return fs.statSync(fullpath).ctime;
+    });
+};
+
+
+
+
+
+
+var cloudinary = require('cloudinary');
+
+
+cloudinary.config({ 
+  cloud_name: 'dxgdkfqwy', 
+  api_key: '527919131931292', 
+  api_secret: 'Yjkm4G2YVAUPfVtLQhK2qcoyHeo' 
+});
+
+
+
+
+
+
+
+app.post('/', (req, res) => {
+    // check if verification token is correct
+    if (req.query.token !== token) {
+        return res.sendStatus(401);
+    }
+ 
+    // print request body
+    console.log(req.body);
+
+
+const zmienna = (req.body.result.parameters.numer_obiektu);
+console.log(zmienna);
+ // console.log(req.body);
+
+
+(async () => {
+
+
+console.log(zmienna + 'tutaj leci zmienna');
+    
+    opn('http://193.93.106.181/ReportServer/Pages/ReportViewer.aspx?%2fChatbot_reports%2fZabka%2fZdarzenia&rs:Command=Render&rs:Format=JPG&mpk='+''+zmienna);
+
+    console.log('http://193.93.106.181/ReportServer/Pages/ReportViewer.aspx?%2fChatbot_reports%2fZabka%2fZdarzenia&rs:Command=Render&rs:Format=JPG&mpk='+''+zmienna);
+
+
+    await delay(1000);
+
+    const plik2 = __dirname+'/images/'+getMostRecentFileName(__dirname+'/images');
+
+    await delay(1000);
+
+    const dane2 = function() {
+  var promisedata2 = new Promise(function(resolve, reject) {
+  cloudinary.v2.uploader.upload(plik2,function(error, image)
+    {        
+        //console.log('leci');
+        const miki2 =  {
+        responses: [
+        {
+            "type": "image",
+            "imageUrl": image.url,
+            "filters": []
+        }
+     ]
+    };
+   // console.log(miki);
+       resolve(miki2);
+            
+    });
+    
+  });
+
+  return promisedata2;
+};
+
+
+    console.log(plik2);
+
+    dane2().then(data => {
+    res.json(data);
+    console.log('lecileci');
+    console.log(data)
+    });
+  
+})();
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+/*
+
+var fs = require('fs'),
+    path = require('path'),
+    _ = require('underscore');
+// Return only base file name without dir
+function getMostRecentFileName(dir) {
+    var files = fs.readdirSync(dir);
+
+    // use underscore for max()
+    return _.max(files, function (f) {
+        var fullpath = path.join(dir, f);
+
+        // ctime = creation time is used
+        // replace with mtime for modification time
+        return fs.statSync(fullpath).ctime;
+    });
+};
+
+var plik =  __dirname+'/images/'+getMostRecentFileName(__dirname+'/images');
+var plik2 = 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png';
+
+var cloudinary = require('cloudinary');
+
+cloudinary.config({ 
+  cloud_name: 'dxgdkfqwy', 
+  api_key: '527919131931292', 
+  api_secret: 'Yjkm4G2YVAUPfVtLQhK2qcoyHeo' 
+});
+
+
+wynik = (cloudinary.v2.uploader.upload(plik, 
+ function(error, result) 
+    {console.log(result, error);
+        return result.url;
+    }));
+*/
